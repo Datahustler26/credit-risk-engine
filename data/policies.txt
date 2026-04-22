@@ -1,0 +1,5 @@
+Credit Risk Policies:
+- Credit score below 600 is risky
+- High loan-to-income ratio increases risk
+- Multiple loans increase default probability
+- Late payments indicate risk
