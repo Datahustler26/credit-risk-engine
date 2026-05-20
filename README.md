@@ -92,7 +92,7 @@ python -m venv .venv
 ### 🔹 Install Dependencies
 
 ```id="cmd3"
-pip install fastapi uvicorn openai python-dotenv
+pip install -r requirements.txt
 ```
 
 ### 🔹 Set API Key
@@ -104,7 +104,20 @@ $env:OPENAI_API_KEY="your-api-key"
 ### 🔹 Run Server
 
 ```id="cmd5"
-uvicorn main:app --reload
+# If you are using an IDE "Web Preview" / port-forwarding, bind to 0.0.0.0:
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+# Or use the helpers:
+# .\\setup.ps1
+# .\\start.ps1          # foreground (Ctrl+C to stop)
+# .\\start-bg.ps1       # background (use stop.ps1 to stop)
+# .\\stop.ps1
+
+# If PowerShell says "running scripts is disabled", use the .cmd wrappers:
+# .\\setup.cmd
+# .\\start.cmd
+# .\\start-bg.cmd
+# .\\stop.cmd
 ```
 
 ---
@@ -168,6 +181,7 @@ http://127.0.0.1:8000/docs
 * ☁️ AWS deployment
 * 🔐 Authentication & rate limiting
 * 📊 Dashboard (React + Charts)
+
 
 ---
 
