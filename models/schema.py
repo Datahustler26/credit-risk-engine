@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class CustomerData(BaseModel):
     income: float
@@ -6,3 +7,4 @@ class CustomerData(BaseModel):
     credit_score: int
     existing_loans: int
     late_payments: bool
+    financial_report: Optional[str] = None

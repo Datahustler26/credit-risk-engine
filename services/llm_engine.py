@@ -68,11 +68,15 @@ def _fallback_explanation(
     factors = _extract_risk_factors(data)
     factors_text = ", ".join(factors) if factors else "no major rule-based red flags detected"
     suggestion = _suggestion_for_category(category)
+    
+    report_note = ""
+    if data.get("financial_report"):
+        report_note = " [Report submitted, LLM offline fallback applied]"
 
     return (
         f"{prefix}: {category} (score {score}). "
         f"Key factors: {factors_text}. "
-        f"Suggestion: {suggestion}"
+        f"Suggestion: {suggestion}{report_note}"
     )
 
 
@@ -102,7 +106,8 @@ def _load_api_key_from_env_file() -> str | None:
 
 def _format_customer_data(data: dict[str, Any]) -> str:
     """Render customer data as stable key: value lines rather than raw dict repr."""
-    return "\n".join(f"  {k}: {v}" for k, v in sorted(data.items()))
+    filtered_data = {k: v for k, v in data.items() if k != "financial_report"}
+    return "\n".join(f"  {k}: {v}" for k, v in sorted(filtered_data.items()))
 
 
 # ── Public API ───────────────────────────────────────────────────────────────
@@ -141,6 +146,11 @@ def generate_explanation(
             + _fallback_explanation(data, score, category)
         )
 
+    financial_report = data.get("financial_report")
+    report_prompt_section = ""
+    if financial_report:
+        report_prompt_section = f"\nFinancial Report Context:\n{financial_report}\n"
+
     prompt = f"""
 You are a financial risk analyst.
 
@@ -152,10 +162,11 @@ Category: {category}
 
 Context:
 {context}
-
+{report_prompt_section}
 Please explain:
 - Why this customer is considered risky (or not)
 - The key issues driving this assessment
+- If a Financial Report Context was provided, analyze it (e.g., negative cash flows, leverage, trends) and integrate those findings
 - Concrete suggestions for the underwriter
 """.strip()
 

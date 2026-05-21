@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
 from dotenv import load_dotenv
+from models.schema import CustomerData
 
 from services.rule_engine import calculate_risk, get_category
 from services.rag_engine import get_context
@@ -10,14 +10,6 @@ from services.llm_engine import generate_explanation
 load_dotenv()
 
 app = FastAPI()
-
-# ✅ Schema
-class CustomerData(BaseModel):
-    income: float
-    loan_amount: float
-    credit_score: int
-    existing_loans: int
-    late_payments: bool
 
 # ✅ Home route
 @app.get("/", response_class=HTMLResponse)
